@@ -32,5 +32,20 @@ jobs:
         with:
           node-version: 10.x
       
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag binu-rearc-quest:$(date +%s)
+      - name: Build App
+        run: npm install
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: docker
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: binu-rearc-quest
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image_tag::$IMAGE_TAG"
+
+      
+#      - name: Build the Docker image
+#        run: docker build . --file Dockerfile --tag binu-rearc-quest:$(date +%s)
