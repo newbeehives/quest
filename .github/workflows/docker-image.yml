@@ -84,4 +84,6 @@ jobs:
         run: |
           cd terraform
           terraform init -backend-config="bucket=binu-rearc-quest-terraform-01" -backend-config="key=binu-rearc-quest/${{ env.ENV_NAME }}.tfstate" -backend-config="region=us-east-1"
-          terraform apply -var "environment=${{ env.ENV_NAME }}" -var "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" -var "secret=${{ secrets.SECRET_WORD }}" -auto-approve
+          terraform apply -auto-approve
+          
+          
