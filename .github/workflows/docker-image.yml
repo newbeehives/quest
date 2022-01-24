@@ -13,6 +13,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag binu-rearc-quest:$(date +%s)
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1    
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag binu-rearc-quest:$(date +%s)
