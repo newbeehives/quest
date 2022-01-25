@@ -80,6 +80,16 @@ resource "aws_security_group_rule" "egress" {
   security_group_id = aws_security_group.sg.id
 }	
 
+resource "tls_private_key" "binu-rearc-quest-ssh-key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "generated_key" {
+  key_name   = "binu-rearc-quest-ssh-key"
+  public_key = tls_private_key.example.public_key_openssh
+}
+	
 module "ec2_instance" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "~> 3.0"
@@ -90,7 +100,8 @@ module "ec2_instance" {
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.sg.id]
   subnet_id              = module.vpc.public_subnets[0]
-
+  key_name   		 = "binu-rearc-quest-ssh-key"
+	  
   tags = {
     Terraform   = "true"
     Environment = "dev"
