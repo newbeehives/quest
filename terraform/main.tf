@@ -80,14 +80,14 @@ resource "aws_security_group_rule" "egress" {
   security_group_id = aws_security_group.sg.id
 }	
 
-resource "tls_private_key" "binu-rearc-quest-ssh-key" {
+resource "tls_private_key" "private_ssh_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "aws_key_pair" "generated_key" {
   key_name   = "binu-rearc-quest-ssh-key"
-  public_key = tls_private_key.example.public_key_openssh
+  public_key = tls_private_key.private_ssh_key.public_key_openssh
 }
 	
 module "ec2_instance" {
