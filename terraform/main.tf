@@ -18,15 +18,6 @@ terraform {
   backend "s3" {}
 }
 
-resource "aws_instance" "app_server" {
-  ami           = "ami-08e4e35cccc6189f4"
-  instance_type = "t2.micro"
-
-  tags = {
-    Name = "ExampleAppServerInstance"
-  }
-}
-
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
 
@@ -88,6 +79,15 @@ resource "aws_security_group_rule" "egress" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.sg.id
 }	
+
+resource "aws_instance" "binu-rearc-quest-ec2" {
+  ami           = "ami-08e4e35cccc6189f4"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "binu-rearc-quest-amzn-linux-ec2"
+  }
+}
 	
 resource "aws_alb" "alb" {
   name = "binu-rearc-quest-alb"
