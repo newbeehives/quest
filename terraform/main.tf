@@ -80,11 +80,20 @@ resource "aws_security_group_rule" "egress" {
   security_group_id = aws_security_group.sg.id
 }	
 
-resource "aws_instance" "binu-rearc-quest-ec2" {
-  ami           = "ami-08e4e35cccc6189f4"
-  instance_type = "t2.micro"
+module "ec2_instance" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "~> 3.0"
+
+  name = "binu-rearc-quest-amzn-linux-ec2"
+
+  ami                    = "ami-08e4e35cccc6189f4"
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = aws_security_group.sg.id
+  subnet_id              = module.vpc.public_subnets[0]
 
   tags = {
+    Terraform   = "true"
+    Environment = "dev"
     Name = "binu-rearc-quest-amzn-linux-ec2"
   }
 }
