@@ -43,3 +43,60 @@ module "vpc" {
   }
 }
 
+resource "aws_security_group" "sg" {
+  name = "binu-rearc-quest-sg"
+  description = "Rearc Quest access over HTTP/HTTPS"
+  vpc_id = module.vpc.vpc_id
+  tags = { 
+	Terraform = "true"
+	Environment = "dev"
+  }
+}
+
+resource "aws_security_group_rule" "inghttp" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg.id
+}
+
+ resource "aws_security_group_rule" "inghttps" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg.id
+}
+
+resource "aws_security_group_rule" "ing3000" {
+  type              = "ingress"
+  from_port         = 3000
+  to_port           = 3000
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg.id
+}
+
+resource "aws_security_group_rule" "egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "all"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg.id
+}	
+	
+resource "aws_alb" "alb" {
+  name = "binu-rearc-quest-alb"
+  internal = false
+  load_balancer_type = "application"
+  subnets = module.vpc.public_subnets
+  security_groups = [aws_security_group.sg.id]
+  tags = { 
+	Terraform = "true"
+	Environment = "dev"
+  }
+}
