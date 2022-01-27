@@ -117,6 +117,9 @@ module "ec2_instance" {
   sudo yum install docker -y
   sudo systemctl enable docker.service
   sudo systemctl start docker.service
+  sudo -s
+  aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 938642921854.dkr.ecr.us-east-1.amazonaws.com
+  docker pull 938642921854.dkr.ecr.us-east-1.amazonaws.com/binu-rearc-quest:latest
   EOT
 	  
   tags = {
