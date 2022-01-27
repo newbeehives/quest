@@ -107,6 +107,15 @@ module "ec2_instance" {
   vpc_security_group_ids = [aws_security_group.sg.id]
   subnet_id              = module.vpc.public_subnets[0]
   key_name   		 = "binu-acg-aws-key"
+
+  user_data = <<-EOT
+  #!/bin/bash
+  echo "Hello Terraform!"
+  sudo yum update -y
+  sudo yum install docker
+  sudo systemctl enable docker.service
+  sudo systemctl start docker.service
+  EOT
 	  
   tags = {
     Terraform   = "true"
