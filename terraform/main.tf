@@ -109,12 +109,11 @@ module "ec2_instance" {
   key_name   		 = "binu-acg-aws-key"
 
   user_data = <<-EOT
-  #!/bin/bash
-  echo "Hello Terraform!"
+  #!/bin/bash -xe
+  echo test of user_data | sudo tee /tmp/user_data.log
+  curl http://169.254.169.254/latest/meta-data/local-ipv4 | sudo tee -a /tmp/user_data.log
+  exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
   sudo yum update -y
-  sudo yum install docker
-  sudo systemctl enable docker.service
-  sudo systemctl start docker.service
   EOT
 	  
   tags = {
@@ -123,7 +122,13 @@ module "ec2_instance" {
     Name = "binu-rearc-quest-amzn-linux-ec2"
   }
 }
-	
+
+/*	
+  sudo yum install docker
+  sudo systemctl enable docker.service
+  sudo systemctl start docker.service
+*/
+		
 resource "aws_alb" "alb" {
   name = "binu-rearc-quest-alb"
   internal = false
