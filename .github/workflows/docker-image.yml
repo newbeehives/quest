@@ -88,7 +88,7 @@ jobs:
           terraform init -backend-config="bucket=binu-rearc-quest-terraform-01" -backend-config="key=binu-rearc-quest/${{ env.ENV_NAME }}.tfstate" -backend-config="region=us-east-1"
           terraform apply -auto-approve
           terraform output rearc_quest_box_ip
-          echo QUEST_BOX_IP=$(terraform output rearc_quest_box_ip) >> $GITHUB_ENV
+          echo QUEST_BOX_IP=$(terraform output -raw rearc_quest_box_ip) >> $GITHUB_ENV
           echo ${{ env.QUEST_BOX_IP }}
           
       - run: |
