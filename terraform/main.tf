@@ -149,7 +149,7 @@ resource "tls_self_signed_cert" "this" {
   ]
 }
 
-resource "aws_acm_certificate" "binu-rearc-quest-cert" {
+resource "aws_acm_certificate" "this" {
   private_key      = tls_private_key.this.private_key_pem
   certificate_body = tls_self_signed_cert.this.cert_pem
 }
@@ -197,7 +197,7 @@ module "alb" {
     {
       port               = 443
       protocol           = "HTTPS"
-      certificate_arn    = aws_acm_certificate.arn
+      certificate_arn    = aws_acm_certificate.this.arn
     }
   ]
 
