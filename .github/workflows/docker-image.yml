@@ -92,14 +92,13 @@ jobs:
           echo $output_value
           
       - run: |
-          output_value=$(terraform output rearc_quest_box_ip)
           echo $output_value
           
       - name: executing remote ssh commands using ssh key
         id: remote-ssh
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ steps.terraform.outputs.rearc_quest_box_ip }}
+          host: $output_value
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY_PEM }}
           port: 22
