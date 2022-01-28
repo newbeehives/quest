@@ -101,16 +101,12 @@ jobs:
         with:
           host: ${{ env.QUEST_BOX_IP }}
           username: ec2-user
-#          username: root
           key: ${{ secrets.SSH_PRIVATE_KEY_PEM }}
           port: 22
           envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION
           script: | 
             whoami
             sudo -s 
-            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws configure set default.region ${{ secrets.AWS_REGION }}
             aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 803943555226.dkr.ecr.us-east-1.amazonaws.com
             sudo docker pull 803943555226.dkr.ecr.us-east-1.amazonaws.com/binu-rearc-quest:latest            
           
