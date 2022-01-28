@@ -92,7 +92,7 @@ jobs:
         id: remote-ssh
         uses: appleboy/ssh-action@master
         with:
-          host: ec2-18-234-147-45.compute-1.amazonaws.com
+          host: ${{steps.terraform.outputs.rearc_quest_box_ip}}
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY_PEM }}
           port: 22
