@@ -129,21 +129,19 @@ module "ec2_instance" {
   }
 }
 
-resource "tls_private_key" "example" {
+resource "tls_private_key" "this" {
   algorithm = "RSA"
 }
 
-resource "tls_self_signed_cert" "example" {
+resource "tls_self_signed_cert" "this" {
   key_algorithm   = "RSA"
-  private_key_pem = tls_private_key.example.private_key_pem
+  private_key_pem = tls_private_key.this.private_key_pem
 
   subject {
-    common_name  = "example.com"
-    organization = "ACME Examples, Inc"
+    common_name  = "binu-rearc-quest.com"
+    organization = "Rearc, Inc"
   }
-
-  validity_period_hours = 12
-
+  validity_period_hours = 720
   allowed_uses = [
     "key_encipherment",
     "digital_signature",
@@ -151,19 +149,71 @@ resource "tls_self_signed_cert" "example" {
   ]
 }
 
-resource "aws_acm_certificate" "binu-self-cert" {
-  private_key      = tls_private_key.example.private_key_pem
-  certificate_body = tls_self_signed_cert.example.cert_pem
+resource "aws_acm_certificate" "binu-rearc-quest-cert" {
+  private_key      = tls_private_key.this.private_key_pem
+  certificate_body = tls_self_signed_cert.this.cert_pem
 }
-		
-resource "aws_alb" "alb" {
+	
+module "alb" {
+  source  = "terraform-aws-modules/alb/aws"
+  version = "~> 6.0"
+
   name = "binu-rearc-quest-alb"
-  internal = false
+
   load_balancer_type = "application"
-  subnets = module.vpc.public_subnets
-  security_groups = [aws_security_group.sg.id]
-  tags = { 
-	Terraform = "true"
-	Environment = "dev"
+
+  vpc_id             = module.vpc.vpc_id
+  subnets            = module.vpc.public_subnets
+  security_groups    = [aws_security_group.sg.id]
+
+  target_groups = [
+    {
+      name_prefix      = "h1"
+      backend_protocol = "HTTP"
+      backend_port     = 80
+      target_type      = "instance"
+      targets = [
+        {
+          target_id = "i-0004e9d84e81b83e7"
+          port = 3000
+        }
+      ]
+    },
+    {
+      name_prefix      = "l1-"
+      backend_protocol = "HTTPS"
+      backend_port     = 443
+      target_type      = "instance"
+      targets = [
+        {
+          target_id = "i-0004e9d84e81b83e7"
+          port = 3000
+        }
+      ]
+    }
+  ]
+
+  https_listeners = [
+    {
+      port               = 443
+      protocol           = "HTTPS"
+      certificate_arn    = "arn:aws:iam::287606573774:server-certificate/binu-rearc-quest-cert"
+      target_group_index = 1
+    }
+  ]
+
+  http_tcp_listeners = [
+    {
+      port               = 80
+      protocol           = "HTTP"
+      target_group_index = 0
+    }
+  ]
+
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+    Name = "binu-rearc-quest-alb"
   }
-}
+}	
+	
