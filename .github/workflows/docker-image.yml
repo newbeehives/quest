@@ -100,10 +100,11 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
         with:
           host: ${{ env.QUEST_BOX_IP }}
-#          username: ec2-user
-          username: root
+          username: ec2-user
+#          username: root
           key: ${{ secrets.SSH_PRIVATE_KEY_PEM }}
           port: 22
+          envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION
           script: | 
             whoami
             sudo -s 
