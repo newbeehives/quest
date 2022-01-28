@@ -75,6 +75,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.1.4
+          terraform_wrapper: false
 
       - name: Terraform Deploy
         id: terraform
@@ -87,9 +88,9 @@ jobs:
           terraform init -backend-config="bucket=binu-rearc-quest-terraform-01" -backend-config="key=binu-rearc-quest/${{ env.ENV_NAME }}.tfstate" -backend-config="region=us-east-1"
           terraform apply -auto-approve
 
-      - run: echo ${{ steps.terraform.outputs.rearc_quest_box_ip }}
-      
-      - run: echo ${{ steps.terraform.outputs.exitcode }}
+      - run: |
+          output_value=$(terraform output rearc_quest_box_ip)
+          echo $output_value
           
       - name: executing remote ssh commands using ssh key
         id: remote-ssh
