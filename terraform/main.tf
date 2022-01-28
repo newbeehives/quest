@@ -197,7 +197,7 @@ module "alb" {
     {
       port               = 443
       protocol           = "HTTPS"
-      certificate_arn    = "arn:aws:iam::803943555226:server-certificate/binu-rearc-quest-cert"
+      certificate_arn    = "arn:aws:iam::803943555226:server-certificate/binu-rearc-quest.com"
       target_group_index = 1
     }
   ]
