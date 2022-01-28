@@ -118,8 +118,8 @@ module "ec2_instance" {
   sudo systemctl enable docker.service
   sudo systemctl start docker.service
   sudo -s
-  aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 287606573774.dkr.ecr.us-east-1.amazonaws.com
-  docker pull 287606573774.dkr.ecr.us-east-1.amazonaws.com/binu-rearc-quest:latest
+  aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 803943555226.dkr.ecr.us-east-1.amazonaws.com
+  docker pull 803943555226.dkr.ecr.us-east-1.amazonaws.com/binu-rearc-quest:latest
   EOT
 	  
   tags = {
@@ -197,7 +197,7 @@ module "alb" {
     {
       port               = 443
       protocol           = "HTTPS"
-      certificate_arn    = "arn:aws:iam::287606573774:server-certificate/binu-rearc-quest-cert"
+      certificate_arn    = "arn:aws:iam::803943555226:server-certificate/binu-rearc-quest-cert"
       target_group_index = 1
     }
   ]
