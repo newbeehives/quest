@@ -89,10 +89,7 @@ jobs:
           terraform apply -auto-approve
           terraform output rearc_quest_box_ip
           echo QUEST_BOX_IP=$(terraform output -raw rearc_quest_box_ip) >> $GITHUB_ENV
-          echo ${{ env.QUEST_BOX_IP }}
-          
-      - run: |
-          echo ${{ env.QUEST_BOX_IP }}
+          echo QUEST_BOX_IP=${{ env.QUEST_BOX_IP }}
           
       - name: executing remote ssh commands using ssh key
         id: remote-ssh
