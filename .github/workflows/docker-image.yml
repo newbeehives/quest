@@ -88,17 +88,17 @@ jobs:
           terraform init -backend-config="bucket=binu-rearc-quest-terraform-01" -backend-config="key=binu-rearc-quest/${{ env.ENV_NAME }}.tfstate" -backend-config="region=us-east-1"
           terraform apply -auto-approve
           terraform output rearc_quest_box_ip
-          output_value=$(terraform output rearc_quest_box_ip)
-          echo $output_value
+          echo QUEST_BOX_IP=$(terraform output rearc_quest_box_ip) >> $GITHUB_ENV
+          echo ${{ env.QUEST_BOX_IP }}
           
       - run: |
-          echo $output_value
+          echo ${{ env.QUEST_BOX_IP }}
           
       - name: executing remote ssh commands using ssh key
         id: remote-ssh
         uses: appleboy/ssh-action@master
         with:
-          host: $output_value
+          host: ${{ env.QUEST_BOX_IP }}
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY_PEM }}
           port: 22
