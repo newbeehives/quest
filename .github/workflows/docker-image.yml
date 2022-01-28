@@ -89,12 +89,14 @@ jobs:
           terraform apply -auto-approve
 
       - run: echo ${{ steps.terraform.outputs.rearc_quest_box_ip }}
+      
+      - run: echo ${{ steps.terraform.outputs.stdout }}
           
       - name: executing remote ssh commands using ssh key
         id: remote-ssh
         uses: appleboy/ssh-action@master
         with:
-          host: 18.234.147.45
+          host: ${{ steps.terraform.outputs.rearc_quest_box_ip }}
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY_PEM }}
           port: 22
