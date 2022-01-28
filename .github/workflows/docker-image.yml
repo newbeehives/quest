@@ -110,5 +110,5 @@ jobs:
             aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws configure set default.region ${{ secrets.AWS_REGION }}
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 803943555226.dkr.ecr.us-east-1.amazonaws.com
-            docker pull 803943555226.dkr.ecr.us-east-1.amazonaws.com/binu-rearc-quest:latest            
+            sudo docker pull 803943555226.dkr.ecr.us-east-1.amazonaws.com/binu-rearc-quest:latest            
           
