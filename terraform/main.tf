@@ -174,7 +174,7 @@ module "alb" {
       target_type      = "instance"
       targets = [
         {
-          target_id = "i-0004e9d84e81b83e7"
+          target_id = module.ec2_instance.id
           port = 3000
         }
       ]
@@ -186,7 +186,7 @@ module "alb" {
       target_type      = "instance"
       targets = [
         {
-          target_id = "i-0004e9d84e81b83e7"
+          target_id = module.ec2_instance.id
           port = 3000
         }
       ]
