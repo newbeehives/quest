@@ -75,7 +75,6 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.1.4
-          terraform_wrapper: true
 
       - name: Terraform Deploy
         id: terraform
@@ -90,7 +89,7 @@ jobs:
 
       - run: echo ${{ steps.terraform.outputs.rearc_quest_box_ip }}
       
-      - run: echo ${{ steps.terraform.outputs.stdout }}
+      - run: echo ${{ steps.terraform.outputs.exitcode }}
           
       - name: executing remote ssh commands using ssh key
         id: remote-ssh
