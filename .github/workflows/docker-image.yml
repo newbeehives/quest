@@ -112,10 +112,6 @@ jobs:
             whoami
             sudo -s 
             whoami
-            sudo yum update -y
-            sudo yum install docker -y
-            sudo systemctl enable docker.service
-            sudo systemctl start docker.service
             aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws configure set default.region ${{ secrets.AWS_REGION }}
             aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 803943555226.dkr.ecr.us-east-1.amazonaws.com
