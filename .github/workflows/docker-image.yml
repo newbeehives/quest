@@ -24,7 +24,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: $AWS_REGION
+          aws-region: ${{ env.AWS_REGION }}
         
       - name: Login to Amazon ECR
         id: login-ecr
@@ -41,17 +41,17 @@ jobs:
       - name: Create the Rearc Quest ECR Repo, if not exists
         run: |
           #aws ecr describe-repositories --repository-names ${{ secrets.AWS_REARC_QUEST_ECR_REPONAME }} || aws ecr create-repository --repository-name ${{ secrets.AWS_REARC_QUEST_ECR_REPONAME }}
-          aws ecr create-repository --repository-name $AWS_REARC_QUEST_ECR_REPONAME || true
+          aws ecr create-repository --repository-name ${{ env.AWS_REARC_QUEST_ECR_REPONAME }} || true
 
       - name: Create the Rearc Quest S3 bucket for terraform state, if not exists
         run: |
-          aws s3api create-bucket --bucket $AWS_REARC_QUEST_S3_BUCKET --region ${{ secrets.AWS_REGION }} || true
+          aws s3api create-bucket --bucket ${{ env.AWS_REARC_QUEST_S3_BUCKET }} --region ${{ env.AWS_REGION }} || true
 
       - name: Build, tag, and push image to Amazon ECR
         id: docker
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: $AWS_REARC_QUEST_ECR_REPONAME
+          ECR_REPOSITORY: ${{ env.AWS_REARC_QUEST_ECR_REPONAME }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
