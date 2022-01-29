@@ -52,7 +52,7 @@ jobs:
       - name: Create the Rearc Quest ECR Repo, if not exists
         run: |
           aws ecr create-repository --repository-name ${{ env.AWS_REARC_QUEST_ECR_REPONAME }} || true
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build, tag, and push the Rearc Quest docker image to Amazon ECR
         id: docker
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
