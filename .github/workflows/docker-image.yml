@@ -40,12 +40,7 @@ jobs:
         
       - name: Create the Rearc Quest ECR Repo, if not exists
         run: |
-          #aws ecr describe-repositories --repository-names ${{ secrets.AWS_REARC_QUEST_ECR_REPONAME }} || aws ecr create-repository --repository-name ${{ secrets.AWS_REARC_QUEST_ECR_REPONAME }}
           aws ecr create-repository --repository-name ${{ env.AWS_REARC_QUEST_ECR_REPONAME }} || true
-
-      - name: Create the Rearc Quest S3 bucket for terraform state, if not exists
-        run: |
-          aws s3api create-bucket --bucket ${{ env.AWS_REARC_QUEST_S3_BUCKET }} --region ${{ env.AWS_REGION }} || true
 
       - name: Build, tag, and push image to Amazon ECR
         id: docker
@@ -80,6 +75,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Create the Rearc Quest S3 bucket for terraform state, if not exists
+        run: |
+          aws s3api create-bucket --bucket ${{ env.AWS_REARC_QUEST_S3_BUCKET }} --region ${{ env.AWS_REGION }} || true
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -94,11 +93,11 @@ jobs:
         id: terraform
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: binu-rearc-quest
+          ECR_REPOSITORY: ${{ env.AWS_REARC_QUEST_ECR_REPONAME }}
           IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
         run: |
           cd terraform
-          terraform init -backend-config="bucket=binu-rearc-quest-terraform-01" -backend-config="key=binu-rearc-quest/${{ env.ENV_NAME }}.tfstate" -backend-config="region=us-east-1"
+          terraform init -backend-config="bucket=${{ env.AWS_REARC_QUEST_S3_BUCKET }}" -backend-config="key=$ECR_REPOSITORY/${{ env.ENV_NAME }}.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
           terraform apply -auto-approve
           terraform output rearc_quest_box_ip
           echo QUEST_BOX_IP=$(terraform output -raw rearc_quest_box_ip) >> $GITHUB_ENV
@@ -110,7 +109,7 @@ jobs:
         env: 
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
         with:
           host: ${{ env.QUEST_BOX_IP }}
           username: ec2-user
@@ -122,7 +121,7 @@ jobs:
             sudo -s 
             whoami
             aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws configure set default.region ${{ secrets.AWS_REGION }}
-            aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 803943555226.dkr.ecr.us-east-1.amazonaws.com
-            sudo docker pull 803943555226.dkr.ecr.us-east-1.amazonaws.com/binu-rearc-quest:latest            
+            aws configure set default.region ${{ env.AWS_REGION }}
+            aws ecr get-login-password --region ${{ env.AWS_REGION }} | sudo docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+            sudo docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.AWS_REARC_QUEST_ECR_REPONAME }}:latest            
           
