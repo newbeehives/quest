@@ -91,10 +91,6 @@ jobs:
           echo QUEST_BOX_IP=$(terraform output -raw rearc_quest_box_ip) >> $GITHUB_ENV
           echo QUEST_BOX_IP=${{ env.QUEST_BOX_IP }}
           
-      - name: Sleep for sometime to allow for the linux EC2 box to start up successfully
-        run: sleep 120s
-        shell: bash          
-          
       - name: executing remote ssh commands using ssh key
         id: remote-ssh
         uses: appleboy/ssh-action@master
