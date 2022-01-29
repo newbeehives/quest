@@ -168,7 +168,7 @@ module "alb" {
     {
       name_prefix      = "http-"
       backend_protocol = "HTTP"
-      backend_port     = 80
+      backend_port     = 3000
       target_type      = "instance"
       health_check = {
         enabled             = true
