@@ -226,7 +226,7 @@ module "alb" {
       port               = 443
       protocol           = "HTTPS"
       certificate_arn    = aws_acm_certificate.this.arn
-      target_group_index = 1	    
+      target_group_index = 0	    
     }
   ]
 
