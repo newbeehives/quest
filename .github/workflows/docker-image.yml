@@ -120,8 +120,9 @@ jobs:
             whoami
             sudo -s 
             whoami
-            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws configure set default.region ${{ env.AWS_REGION }}
-            aws ecr get-login-password --region ${{ env.AWS_REGION }} | sudo docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+            sudo aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+            sudo aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            sudo aws configure set default.region ${{ env.AWS_REGION }}
+            sudo aws ecr get-login-password --region ${{ env.AWS_REGION }} | sudo docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
             sudo docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.AWS_REARC_QUEST_ECR_REPONAME }}:latest            
           
