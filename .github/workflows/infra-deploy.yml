@@ -59,7 +59,7 @@ jobs:
         run: |
           cd terraform
           terraform init -backend-config="bucket=${{ env.AWS_REARC_QUEST_S3_BUCKET }}" -backend-config="key=$ECR_REPOSITORY/${{ env.ENV_NAME }}.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
-          terraform apply -var "aws_region=${{ env.AWS_REGION }}" -auto-approve
+          terraform apply -var "aws_region=${{ env.AWS_REGION }}" -var "infra_env=${{ env.ENV_NAME }}" -auto-approve
           terraform output rearc_quest_box_ip
           echo QUEST_BOX_IP=$(terraform output -raw rearc_quest_box_ip) >> $GITHUB_ENV
           echo QUEST_BOX_IP=${{ env.QUEST_BOX_IP }}
