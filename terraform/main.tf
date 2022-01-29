@@ -166,7 +166,7 @@ module "alb" {
 
   target_groups = [
     {
-      name_prefix      = "http3000-"
+      name_prefix      = "h1-"
       backend_protocol = "HTTP"
       backend_port     = 3000
       target_type      = "instance"
