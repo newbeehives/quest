@@ -14,6 +14,7 @@ provider "aws" {
   region  = var.aws_region
 }
 
+# Use AWS S3 as the backend store for tfstate management.
 terraform {
   backend "s3" {}
 }
