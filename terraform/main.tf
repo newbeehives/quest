@@ -11,7 +11,7 @@ terraform {
 
 provider "aws" {
   profile = "default"
-  region  = "us-east-1"
+  region  = var.aws_region
 }
 
 terraform {
@@ -21,7 +21,7 @@ terraform {
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
 
-  name            = "binu-rearc-quest-vpc"
+  name            = "${var.infra_prefix}-vpc"
   cidr            = "10.1.0.0/16"
   azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
   private_subnets = ["10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24"]
@@ -35,7 +35,7 @@ module "vpc" {
 }
 
 resource "aws_security_group" "sg" {
-  name = "binu-rearc-quest-sg"
+  name = "${var.infra_prefix}-sg"
   description = "Rearc Quest access over HTTP/HTTPS"
   vpc_id = module.vpc.vpc_id
   tags = { 
@@ -92,7 +92,7 @@ resource "aws_security_group_rule" "egress" {
 module "key_pair" {
   source = "terraform-aws-modules/key-pair/aws"
 
-  key_name   = "binu-acg-aws-key"
+  key_name   = "${var.infra_prefix}-acg-aws-key"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCdeibCPVmpGOIgsbJfu7NBzxIEP+8FAyUQsxBe1wWafeECqRCWn1CPv7oVf6GMjVkGqN7Z9/V1CbEtjUtKN/nJ76dkunoYPJp2oM49zvzGwHh8uD3dGlZzaXNd7Ywsle0nT8RshOY1qIeVCqISnhAWmsN2cKJq70WJn45XxQlpZA/W89aMNk5L3jn2tPMd6NajD/RAUAgFpWmhfrTSk+gkUHNtk/FzWzWinTuHwP1oxk9nrP91qRwJhXCMt1pFqBjL30PeIWgCt6tNEFf9fpTpy+88Bv86bze5ggskDf6A3LhZEEanGajuvW7qYifyPXbhTLQXLgxs9v486ojqvYMH"
 }
 	
@@ -100,13 +100,13 @@ module "ec2_instance" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "~> 3.0"
 
-  name = "binu-rearc-quest-amzn-linux-ec2"
+  name = "${var.infra_prefix}-amzn-linux-ec2"
 
   ami                    = "ami-08e4e35cccc6189f4"
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.sg.id]
   subnet_id              = module.vpc.public_subnets[0]
-  key_name   		 = "binu-acg-aws-key"
+  key_name   		 = "${var.infra_prefix}-acg-aws-key"
 
   user_data = <<-EOT
   #!/bin/bash -xe
@@ -156,7 +156,7 @@ module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 6.0"
 
-  name = "binu-rearc-quest-alb"
+  name = "${var.infra_prefix}-alb"
 
   load_balancer_type = "application"
 
@@ -210,7 +210,7 @@ module "alb" {
   tags = {
     Terraform   = "true"
     Environment = "dev"
-    Name = "binu-rearc-quest-alb"
+    Name = "${var.infra_prefix}-alb"
   }
 }	
 	
