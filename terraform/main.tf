@@ -113,6 +113,11 @@ module "ec2_instance" {
   echo test of user_data | sudo tee /tmp/user_data.log
   curl http://169.254.169.254/latest/meta-data/local-ipv4 | sudo tee -a /tmp/user_data.log
   exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+  sudo -s
+  sudo yum update -y
+  sudo yum install docker -y
+  sudo systemctl enable docker.service
+  sudo systemctl start docker.service
   EOT
 	  
   tags = {
