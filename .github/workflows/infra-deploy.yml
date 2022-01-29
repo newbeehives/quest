@@ -23,7 +23,7 @@ jobs:
     env:
       AWS_REGION: us-east-1
       AWS_REARC_QUEST_ECR_REPONAME: binu-rearc-quest
-      AWS_REARC_QUEST_S3_BUCKET: binu-rearc-quest-terraform-03
+      AWS_REARC_QUEST_S3_BUCKET: ${{ secrets.AWS_REARC_QUEST_S3_BUCKET }}
     outputs:
       url: ${{ steps.terraform.outputs.url }}
     steps:
