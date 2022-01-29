@@ -1,1 +1,55 @@
-helloworld
+name: Build the Rearc Quest docker image and push to AWS ECR repository
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'bin/**'
+      - 'src/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env: 
+      AWS_REGION: us-east-1
+      AWS_REARC_QUEST_ECR_REPONAME: binu-rearc-quest
+      AWS_REARC_QUEST_S3_BUCKET: binu-rearc-quest-terraform-01
+    outputs:
+      image_tag: ${{ steps.docker.outputs.image_tag }}      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+        
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1    
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      
+      - name: Build App
+        run: npm install
+        
+      - name: Create the Rearc Quest ECR Repo, if not exists
+        run: |
+          aws ecr create-repository --repository-name ${{ env.AWS_REARC_QUEST_ECR_REPONAME }} || true
+      - name: Build, tag, and push image to Amazon ECR
+        id: docker
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.AWS_REARC_QUEST_ECR_REPONAME }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "::set-output name=image_tag::$IMAGE_TAG"
