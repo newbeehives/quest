@@ -166,10 +166,21 @@ module "alb" {
 
   target_groups = [
     {
-      name_prefix      = "h1"
+      name_prefix      = "http-"
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
+      health_check = {
+        enabled             = true
+        interval            = 10
+        path                = "/secret_word"
+        port                = "3000"
+        healthy_threshold   = 2
+        unhealthy_threshold = 3
+        timeout             = 10
+        protocol            = "HTTP"
+        matcher             = "200-399"
+      }	    
       targets = [
         {
           target_id = module.ec2_instance.id
@@ -178,10 +189,21 @@ module "alb" {
       ]
     },
     {
-      name_prefix      = "l1-"
+      name_prefix      = "https-"
       backend_protocol = "HTTPS"
       backend_port     = 443
       target_type      = "instance"
+      health_check = {
+        enabled             = true
+        interval            = 10
+        path                = "/secret_word"
+        port                = "3000"
+        healthy_threshold   = 2
+        unhealthy_threshold = 3
+        timeout             = 10
+        protocol            = "HTTP"
+        matcher             = "200-399"
+      }	    
       targets = [
         {
           target_id = module.ec2_instance.id
