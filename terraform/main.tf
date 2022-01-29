@@ -177,7 +177,7 @@ module "alb" {
         port                = "3000"
         healthy_threshold   = 2
         unhealthy_threshold = 3
-        timeout             = 10
+        timeout             = 5
         protocol            = "HTTP"
         matcher             = "200-399"
       }	    
@@ -200,7 +200,7 @@ module "alb" {
         port                = "3000"
         healthy_threshold   = 2
         unhealthy_threshold = 3
-        timeout             = 10
+        timeout             = 5
         protocol            = "HTTP"
         matcher             = "200-399"
       }	    
