@@ -30,7 +30,7 @@ module "vpc" {
   enable_nat_gateway = true
   tags = { 
 	Terraform = "true"
-	Environment = "dev"
+	Environment = "${var.infra_env}"
   }
 }
 
@@ -40,7 +40,7 @@ resource "aws_security_group" "sg" {
   vpc_id = module.vpc.vpc_id
   tags = { 
 	Terraform = "true"
-	Environment = "dev"
+	Environment = "${var.infra_env}"
   }
 }
 
@@ -122,8 +122,8 @@ module "ec2_instance" {
 	  
   tags = {
     Terraform   = "true"
-    Environment = "dev"
-    Name = "binu-rearc-quest-amzn-linux-ec2"
+    Environment = "${var.infra_env}"
+    Name = "${var.infra_prefix}-amzn-linux-ec2"
   }
 }
 
@@ -136,7 +136,7 @@ resource "tls_self_signed_cert" "this" {
   private_key_pem = tls_private_key.this.private_key_pem
 
   subject {
-    common_name  = "*.us-east-1.elb.amazonaws.com"
+    common_name  = "*.${var.aws_region}.elb.amazonaws.com"
     organization = "Rearc, Inc"
   }
   validity_period_hours = 720
@@ -209,7 +209,7 @@ module "alb" {
 
   tags = {
     Terraform   = "true"
-    Environment = "dev"
+    Environment = "${var.infra_env}"
     Name = "${var.infra_prefix}-alb"
   }
 }	
