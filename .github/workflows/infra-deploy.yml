@@ -24,8 +24,7 @@ jobs:
       AWS_REGION: us-east-1
       AWS_REARC_QUEST_ECR_REPONAME: binu-rearc-quest
       AWS_REARC_QUEST_S3_BUCKET: ${{ secrets.AWS_REARC_QUEST_S3_BUCKET }}
-    outputs:
-      url: ${{ steps.terraform.outputs.url }}
+      ENV_NAME: Dev
     steps:
       - name: Checkout
         uses: actions/checkout@v2      
@@ -60,7 +59,7 @@ jobs:
         run: |
           cd terraform
           terraform init -backend-config="bucket=${{ env.AWS_REARC_QUEST_S3_BUCKET }}" -backend-config="key=$ECR_REPOSITORY/${{ env.ENV_NAME }}.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
-          terraform apply -auto-approve
+          terraform apply -var "aws_region=${{ env.AWS_REGION }}" -auto-approve
           terraform output rearc_quest_box_ip
           echo QUEST_BOX_IP=$(terraform output -raw rearc_quest_box_ip) >> $GITHUB_ENV
           echo QUEST_BOX_IP=${{ env.QUEST_BOX_IP }}
