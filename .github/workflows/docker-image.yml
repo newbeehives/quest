@@ -35,6 +35,14 @@ jobs:
       
       - name: Build App
         run: npm install
+        
+      - name: Create the Rearc Quest ECR Repo, if not exists
+        run: |
+          aws ecr describe-repositories --repository-names ${{ secrets.AWS_REARC_QUEST_ECR_REPONAME }} || aws ecr create-repository --repository-name ${{ secrets.AWS_REARC_QUEST_ECR_REPONAME }}
+
+      - name: Create the Rearc Quest S3 bucket for terraform state, if not exists
+        run: |
+          aws s3api create-bucket --bucket ${{ secrets.AWS_REARC_QUEST_S3_BUCKET }} --region ${{ secrets.AWS_REGION }} || true
 
       - name: Build, tag, and push image to Amazon ECR
         id: docker
