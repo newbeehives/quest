@@ -213,19 +213,20 @@ module "alb" {
     }
   ]
 
-  https_listeners = [
-    {
-      port               = 443
-      protocol           = "HTTPS"
-      certificate_arn    = aws_acm_certificate.this.arn
-    }
-  ]
-
   http_tcp_listeners = [
     {
       port               = 80
       protocol           = "HTTP"
       target_group_index = 0
+    }
+  ]
+	    
+  https_listeners = [
+    {
+      port               = 443
+      protocol           = "HTTPS"
+      certificate_arn    = aws_acm_certificate.this.arn
+      target_group_index = 1	    
     }
   ]
 
