@@ -11,14 +11,10 @@ on:
         - info
         - warning
         - debug 
-  push:
-    branches: [ master ]
-    paths:
-      - '.github/workflows/build_and_deploy*'
       
 jobs:
   call-docker-image-build-workflow:
-    uses: .github/workflows/docker-image-build.yml
+    uses: ./.github/workflows/docker-image-build.yml
   call-infra-deploy-workflow:
     needs: call-docker-image-build-workflow
-    uses: .github/workflows/infra-deploy.yml
+    uses: ./.github/workflows/infra-deploy.yml
