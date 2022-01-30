@@ -55,6 +55,7 @@ jobs:
           IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
         run: |
           cd terraform
+          echo "Run terraform destroy operations here... Currently skipped..."
           #terraform init -backend-config="bucket=${{ env.AWS_REARC_QUEST_S3_BUCKET }}" -backend-config="key=$ECR_REPOSITORY/${{ env.ENV_NAME }}.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
           #terraform destroy -var "aws_region=${{ env.AWS_REGION }}" -var "infra_env=${{ env.ENV_NAME }}"
   tfstate_cleanup:
@@ -81,9 +82,9 @@ jobs:
           echo "Cleanup the tfstate s3 bucket only if explicitly requested to cleanup.... default is false, and input provided is ${{ github.event.inputs.cleanupTFstate || false }}" 
 
       - name: Delete the tfstate s3 bucket
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.cleanupTFstate == true }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.cleanupTFstate == 'true' }}
         run: 
-          echo "tfstate s3 bucket to be deleeted here."
+          echo "Run aws cli commands to deleted the tfstate s3 bucket... Currently skipped..."
 
 
 
