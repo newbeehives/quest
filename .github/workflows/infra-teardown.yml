@@ -23,7 +23,7 @@ on:
       - '.github/workflows/infra-teardown*'
       
 jobs:
-  destroy:
+  infra_teardown:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: us-east-1
@@ -56,6 +56,29 @@ jobs:
         run: |
           cd terraform
           terraform init -backend-config="bucket=${{ env.AWS_REARC_QUEST_S3_BUCKET }}" -backend-config="key=$ECR_REPOSITORY/${{ env.ENV_NAME }}.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
-          terraform destroy -var "aws_region=${{ env.AWS_REGION }}" -var "infra_env=${{ env.ENV_NAME }}" -auto-approve
+          #terraform destroy -var "aws_region=${{ env.AWS_REGION }}" -var "infra_env=${{ env.ENV_NAME }}" -auto-approve
+  tfstate_cleanup:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-east-1
+      AWS_REARC_QUEST_ECR_REPONAME: binu-rearc-quest
+      AWS_REARC_QUEST_S3_BUCKET: ${{ secrets.AWS_REARC_QUEST_S3_BUCKET }}
+      ENV_NAME: Dev
+    needs: infra_teardown
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2      
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+          
+      - name: Cleanup the tfstate s3 bucket only if explicitly requested to cleanup.
+        run: 
+          echo "Cleanup the tfstate s3 bucket only if explicitly requested to cleanup.... input provided is ${{ github.event.inputs.cleanupTFstate }}" 
+
           
   
