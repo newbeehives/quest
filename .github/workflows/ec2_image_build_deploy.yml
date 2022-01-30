@@ -37,15 +37,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-        
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1    
 
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 10.x
-      
-      - name: Build App
-        run: npm install
+      - name: Deploy two EC2 1. Ansible Controller 2. EC2 for hosting the Rearc Quest NodeJS app
+        run: echo 'Deploy EC2 into the default VPC, and run ansible to install/deploy the NodeJS app'
+
