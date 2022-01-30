@@ -80,5 +80,11 @@ jobs:
         run: 
           echo "Cleanup the tfstate s3 bucket only if explicitly requested to cleanup.... input provided is ${{ github.event.inputs.cleanupTFstate || false }}" 
 
+      - name: Delete the tfstate s3 bucket
+        if: ${{ github.event.inputs.cleanupTFstate || false }}
+        run: 
+          echo "tfstate s3 bucket to be deleeted here."
+          
+
 
   
