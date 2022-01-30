@@ -1,4 +1,4 @@
-name: Deploy the Rearc Quest infrastructure using terraform, and run the docker container inside it
+name: Teardown and cleanup the Rearc Quest infrastructure from AWS 
 on:
   workflow_dispatch:
     inputs:
