@@ -1,7 +1,20 @@
 name: Deploy the Rearc Quest infrastructure using terraform, and run the docker container inside it
 on:
   workflow_call:
-  
+    secrets:
+      AWS_ACCESS_KEY_ID: 
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_REARC_QUEST_S3_BUCKET:
+        required: true
+      REARC_QUEST_SECRET_WORD:
+        required: true
+      AWS_ACCOUNT_ID:
+        required: true
+      SSH_PRIVATE_KEY_PEM:
+        required: true
+
   workflow_dispatch:
     inputs:
       logLevel:

@@ -22,3 +22,11 @@ jobs:
   call-infra-deploy-workflow:
     needs: call-docker-image-build-workflow
     uses: ./.github/workflows/infra-deploy.yml
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REARC_QUEST_S3_BUCKET: ${{ secrets.AWS_REARC_QUEST_S3_BUCKET }}
+      REARC_QUEST_SECRET_WORD: ${{ secrets.REARC_QUEST_SECRET_WORD }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      SSH_PRIVATE_KEY_PEM: ${{ secrets.SSH_PRIVATE_KEY_PEM }}
+
