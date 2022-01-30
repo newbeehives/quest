@@ -1,4 +1,4 @@
-name: For the rearc quest deployment, perform both the build and deployment activities together within the same chained jobs.
+name: Single-Click Deployment... Build and Deploy workflows chained together 
 on:
   workflow_dispatch:
     inputs:
