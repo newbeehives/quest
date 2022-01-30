@@ -78,7 +78,7 @@ jobs:
           
       - name: Cleanup the tfstate s3 bucket only if explicitly requested to cleanup.
         run: 
-          echo "Cleanup the tfstate s3 bucket only if explicitly requested to cleanup.... input provided is ${{ github.event.inputs.cleanupTFstate }}" 
+          echo "Cleanup the tfstate s3 bucket only if explicitly requested to cleanup.... input provided is ${{ github.event.inputs.cleanupTFstate || false }}" 
 
-          
+
   
