@@ -15,6 +15,10 @@ on:
 jobs:
   call-docker-image-build-workflow:
     uses: ./.github/workflows/docker-image-build.yml
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
   call-infra-deploy-workflow:
     needs: call-docker-image-build-workflow
     uses: ./.github/workflows/infra-deploy.yml

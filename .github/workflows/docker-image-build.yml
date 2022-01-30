@@ -1,6 +1,11 @@
 name: Build the Rearc Quest docker image and push to AWS ECR repository
 on:
   workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID: 
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
      
   workflow_dispatch:
     inputs:
@@ -25,7 +30,6 @@ jobs:
     env: 
       AWS_REGION: us-east-1
       AWS_REARC_QUEST_ECR_REPONAME: binu-rearc-quest
-      AWS_REARC_QUEST_S3_BUCKET: binu-rearc-quest-terraform-01
     outputs:
       image_tag: ${{ steps.docker.outputs.image_tag }}      
     steps:
