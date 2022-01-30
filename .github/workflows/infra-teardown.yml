@@ -1,0 +1,61 @@
+name: Deploy the Rearc Quest infrastructure using terraform, and run the docker container inside it
+on:
+  workflow_dispatch:
+    inputs:
+      cleanupTFstate:
+        description: 'Cleanup Terraform Tfstate S3 bucket?'     
+        required: false
+        default: "False"
+        type: boolean
+      logLevel:
+        description: 'Log level'     
+        required: false
+        default: 'debug' 
+        type: choice
+        options:
+        - info
+        - warning
+        - debug 
+  push:
+    branches: [ master ]
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/infra-teardown*'
+      
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-east-1
+      AWS_REARC_QUEST_ECR_REPONAME: binu-rearc-quest
+      AWS_REARC_QUEST_S3_BUCKET: ${{ secrets.AWS_REARC_QUEST_S3_BUCKET }}
+      ENV_NAME: Dev
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2      
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.1.4
+          terraform_wrapper: false
+
+      - name: Terraform Destroy
+        id: terraform
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.AWS_REARC_QUEST_ECR_REPONAME }}
+          IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
+        run: |
+          cd terraform
+          terraform init -backend-config="bucket=${{ env.AWS_REARC_QUEST_S3_BUCKET }}" -backend-config="key=$ECR_REPOSITORY/${{ env.ENV_NAME }}.tfstate" -backend-config="region=${{ env.AWS_REGION }}"
+          terraform destroy -var "aws_region=${{ env.AWS_REGION }}" -var "infra_env=${{ env.ENV_NAME }}" -auto-approve
+          
+  

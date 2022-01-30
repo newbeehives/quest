@@ -15,7 +15,7 @@ on:
     branches: [ master ]
     paths:
       - 'terraform/**'
-      - '.github/workflows/infra*'
+      - '.github/workflows/infra-deploy*'
       
 jobs:
   deploy:
