@@ -77,7 +77,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY_PEM }}
           port: 22
-          envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION
+          envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION, REARC_QUEST_SECRET_WORD
           script: | 
             whoami
             sudo aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}

@@ -1,0 +1,51 @@
+name: Build the Rearc Quest NodeJS app and deploy inside EC2 box
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: false
+        default: 'debug' 
+        type: choice
+        options:
+        - info
+        - warning
+        - debug 
+  push:
+    branches: [ master ]
+    paths:
+      - 'bin/**'
+      - 'src/**'
+      - '.github/workflows/ec2_image_*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env: 
+      AWS_REGION: us-east-1
+      AWS_REARC_QUEST_ECR_REPONAME: binu-rearc-quest
+      AWS_REARC_QUEST_S3_BUCKET: binu-rearc-quest-terraform-01
+    outputs:
+      image_tag: ${{ steps.docker.outputs.image_tag }}      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+        
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1    
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      
+      - name: Build App
+        run: npm install
