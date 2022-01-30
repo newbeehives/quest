@@ -1,0 +1,24 @@
+name: For the rearc quest deployment, perform both the build and deployment activities together within the same chained jobs.
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: false
+        default: 'debug' 
+        type: choice
+        options:
+        - info
+        - warning
+        - debug 
+  push:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/build_and_deploy*'
+      
+jobs:
+  call-docker-image-build-workflow:
+    uses: .github/workflows/docker-image-build.yml
+  call-infra-deploy-workflow:
+    needs: call-docker-image-build-workflow
+    uses: .github/workflows/infra-deploy.yml

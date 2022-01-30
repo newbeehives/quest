@@ -1,5 +1,7 @@
 name: Deploy the Rearc Quest infrastructure using terraform, and run the docker container inside it
 on:
+  workflow_call:
+  
   workflow_dispatch:
     inputs:
       logLevel:

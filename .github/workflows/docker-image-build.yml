@@ -1,5 +1,7 @@
 name: Build the Rearc Quest docker image and push to AWS ECR repository
 on:
+  workflow_call:
+     
   workflow_dispatch:
     inputs:
       logLevel:
